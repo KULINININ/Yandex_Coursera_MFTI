@@ -4,7 +4,6 @@ Yandex_Coursera_MFTI/*.vcxproj.filters
 Yandex_Coursera_MFTI/*.vcxproj.user
 
 *.json
-*.cpp
 
 ### C++ ###
 # Prerequisites
