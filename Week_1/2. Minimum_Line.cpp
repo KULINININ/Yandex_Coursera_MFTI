@@ -3,15 +3,13 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 int main()
 {
-    string buff;
-    vector<string> vec(3);
-    cin >> vec[0];
-    cin >> vec[1];
-    cin >> vec[2];
+    std::string buff;
+    std::vector<std::string> vec(3);
+    std::cin >> vec[0];
+    std::cin >> vec[1];
+    std::cin >> vec[2];
     sort(vec.begin(), vec.end());
-    cout << vec[0];
+    std::cout << vec[0];
 }
