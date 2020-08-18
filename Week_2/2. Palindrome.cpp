@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
 
-int main()
+bool IsPalindrom(std::string input)
 {
     int mid;
-    std::string input, left, right;
+    std::string left, right;
     std::cin >> input;
 
     if(((input.size())%2) == 1)
