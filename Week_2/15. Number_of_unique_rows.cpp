@@ -12,7 +12,7 @@ int main()
     {   
         std::string input_;
         std::cin >> input_;
-        str.emplace(input_);
+        str.insert(input_);
     }
     
     std::cout << str.size();
