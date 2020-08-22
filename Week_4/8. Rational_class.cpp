@@ -1,91 +1,145 @@
 #include <iostream>
 #include <algorithm>
-#include <numeric>
+#include <sstream>
+#include <map>
+#include <set>
+#include <vector>
 
-int GreatestCommonDivisor(int a, int b) {
-    if (b == 0) {
+int GreatestCommonDivisor(int a, int b) 
+{
+    if (b == 0) 
+    {
         return a;
-    } else {
+    }
+    else 
+    {
         return GreatestCommonDivisor(b, a % b);
     }
 }
 
-class Rational {
+class Rational 
+{
 public:
-    Rational() {
-        numenator = 0;
+    Rational() 
+    {
+        numerator = 0;
         denominator = 1;
     }
 
-    Rational(int numerator, int denominator) {
-        int gcd = GreatestCommonDivisor(numerator, denominator);
-        numerator /= gcd;
-        denominator /= gcd;
+    Rational(int new_numerator, int new_denominator) 
+    {
+        int gcd = GreatestCommonDivisor(new_numerator, new_denominator);
+        numerator = new_numerator / gcd;
+        denominator = new_denominator / gcd;
+        if (denominator < 0) 
+        {
+            denominator = -denominator;
+            numerator = -numerator;
+        }
     }
 
-    int Numerator() const {
-        return numenator;
+    int Numerator() const 
+    {
+        return numerator;
     }
 
-    int Denominator() const {
+    int Denominator() const 
+    {
         return denominator;
     }
 
 private:
-    int numenator;
+    int numerator;
     int denominator;
 };
 
-int main() {
-
-using namespace std;
-
+bool operator==(const Rational& lhs, const Rational& rhs)
+{
+    if ((lhs.Numerator() == rhs.Numerator()) && (lhs.Denominator() == rhs.Denominator()))
     {
-        const Rational r(3, 10);
-        std::cout << r.Denominator() << " " << r.Numerator();
-        if (r.Numerator() != 3 || r.Denominator() != 10) {
-            cout << "Rational(3, 10) != 3/10" << endl;
-            return 1;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Rational operator+(const Rational& lhs, const Rational& rhs)
+{
+    return  { lhs.Numerator() * rhs.Denominator() + rhs.Numerator() * lhs.Denominator(), lhs.Denominator() * rhs.Denominator() };
+}
+
+Rational operator-(const Rational& lhs, const Rational& rhs) 
+{
+    return { lhs.Numerator() * rhs.Denominator() - rhs.Numerator() * lhs.Denominator(), lhs.Denominator() * rhs.Denominator() };
+}
+
+Rational operator*(const Rational& lhs, const Rational& rhs)
+{
+    return { lhs.Numerator() * rhs.Numerator(), lhs.Denominator() * rhs.Denominator() };
+}
+
+Rational operator / (const Rational & lhs, const Rational & rhs) 
+{
+    return lhs * Rational(rhs.Denominator(), rhs.Numerator());
+}
+
+std::istream& operator >> (std::istream& stream, Rational& r) 
+{
+    int a, b;
+    char c;
+
+    if (stream) {
+        stream >> a >> c >> b;
+        if (stream && c == '/') {
+            r = Rational(a, b);
         }
     }
 
+    return stream;
+}
+
+std::ostream& operator << (std::ostream& stream, const Rational& r) {
+    return stream << r.Numerator() << '/' << r.Denominator();
+}
+
+bool operator < (const Rational& lhs, const Rational& rhs) {
+    return (lhs - rhs).Numerator() < 0;
+}
+
+
+int main() 
+{
+    using namespace std;
     {
-        const Rational r(8, 12);
-        if (r.Numerator() != 2 || r.Denominator() != 3) {
-            cout << "Rational(8, 12) != 2/3" << endl;
+        const set<Rational> rs = { {1, 2}, {1, 25}, {3, 4}, {3, 4}, {1, 2} };
+
+        if (rs.size() != 3) {
+            cout << "Wrong amount of items in the set" << endl;
+            return 1;
+        }
+
+        vector<Rational> v;
+        for (auto x : rs) {
+            v.push_back(x);
+        }
+        if (v != vector<Rational>{ {1, 25}, { 1, 2 }, { 3, 4 }}) {
+            cout << "Rationals comparison works incorrectly" << endl;
             return 2;
         }
     }
 
     {
-        const Rational r(-4, 6);
-        if (r.Numerator() != -2 || r.Denominator() != 3) {
-            cout << "Rational(-4, 6) != -2/3" << endl;
+        map<Rational, int> count;
+        ++count[{1, 2}];
+        ++count[{1, 2}];
+
+        ++count[{2, 3}];
+
+        if (count.size() != 2) {
+            cout << "Wrong amount of items in the map" << endl;
             return 3;
-        }
-    }
-
-    {
-        const Rational r(4, -6);
-        if (r.Numerator() != -2 || r.Denominator() != 3) {
-            cout << "Rational(4, -6) != -2/3" << endl;
-            return 3;
-        }
-    }
-
-    {
-        const Rational r(0, 15);
-        if (r.Numerator() != 0 || r.Denominator() != 1) {
-            cout << "Rational(0, 15) != 0/1" << endl;
-            return 4;
-        }
-    }
-
-    {
-        const Rational defaultConstructed;
-        if (defaultConstructed.Numerator() != 0 || defaultConstructed.Denominator() != 1) {
-            cout << "Rational() != 0/1" << endl;
-            return 5;
         }
     }
 
